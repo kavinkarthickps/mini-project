@@ -1,0 +1,102 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile with display settings and agricultural preferences",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "displayName": { "type": "string", "maxLength": 120 },
+        "email": { "type": "string", "maxLength": 180 },
+        "photoURL": { "type": "string", "maxLength": 500 },
+        "preferredLanguage": { "type": "string", "enum": ["en", "ta"] },
+        "defaultCrop": { "type": "string", "maxLength": 50 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "email"]
+    },
+    "Field": {
+      "title": "Field",
+      "description": "Agricultural field managed by the user with crop profiles and history",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "fieldName": { "type": "string", "maxLength": 100 },
+        "crop": { "type": "string", "maxLength": 50 },
+        "cropVariety": { "type": "string", "maxLength": 50 },
+        "growthStage": { "type": "string", "maxLength": 50 },
+        "location": { "type": "string", "maxLength": 100 },
+        "notes": { "type": "string", "maxLength": 1000 },
+        "riskScore": { "type": "number" },
+        "riskTier": { "type": "string", "enum": ["low", "moderate", "elevated", "severe"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "fieldName", "crop"]
+    },
+    "ScanReport": {
+      "title": "ScanReport",
+      "description": "Pest detection scan report with Gemini vision diagnostic findings and IPM guidance",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "fieldId": { "type": "string", "maxLength": 128 },
+        "fieldName": { "type": "string", "maxLength": 100 },
+        "cropType": { "type": "string", "maxLength": 50 },
+        "growthStage": { "type": "string", "maxLength": 50 },
+        "scanDate": { "type": "string", "format": "date-time" },
+        "pestPresent": { "type": "boolean" },
+        "isInconclusive": { "type": "boolean" },
+        "pestName": { "type": "string", "maxLength": 100 },
+        "scientificName": { "type": "string", "maxLength": 100 },
+        "confidenceScore": { "type": "number" },
+        "confidenceExplanation": { "type": "string", "maxLength": 1000 },
+        "severity": { "type": "string", "enum": ["low", "moderate", "high", "critical"] },
+        "approximateAffectedArea": { "type": "string", "maxLength": 100 },
+        "weatherConditions": { "type": "string", "maxLength": 200 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "cropType", "pestName", "severity"]
+    },
+    "MonitoringTask": {
+      "title": "MonitoringTask",
+      "description": "Recommended field monitoring tasks generated from risk intelligence",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "fieldId": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 150 },
+        "description": { "type": "string", "maxLength": 500 },
+        "dueDate": { "type": "string", "format": "date-time" },
+        "priority": { "type": "string", "enum": ["low", "medium", "high", "urgent"] },
+        "completed": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "title"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "User profile document isolated per user"
+    },
+    "/fields/{fieldId}": {
+      "schema": { "$ref": "#/entities/Field" },
+      "description": "Farm fields created and owned by individual users"
+    },
+    "/scans/{scanId}": {
+      "schema": { "$ref": "#/entities/ScanReport" },
+      "description": "AI pest scans saved and owned by individual users"
+    },
+    "/tasks/{taskId}": {
+      "schema": { "$ref": "#/entities/MonitoringTask" },
+      "description": "Actionable monitoring alerts and treatment tasks"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "PestGuard AI",
+  "description": "Intelligent crop pest detection, damage severity assessment, and precision farming risk intelligence platform powered by vision AI.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

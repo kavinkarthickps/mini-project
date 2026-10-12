@@ -1,0 +1,9 @@
+{
+  "apiKey": "AIzaSyDummyPestGuardKeyForPrototyping",
+  "authDomain": "pestguard-ai-prototype.firebaseapp.com",
+  "projectId": "pestguard-ai-prototype",
+  "storageBucket": "pestguard-ai-prototype.appspot.com",
+  "messagingSenderId": "524453222647",
+  "appId": "1:524453222647:web:9fa42e128189c47e8b2a1a",
+  "firestoreDatabaseId": "(default)"
+}
