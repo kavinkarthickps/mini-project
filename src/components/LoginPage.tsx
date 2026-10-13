@@ -21,9 +21,10 @@ import {
 interface LoginPageProps {
   onSuccess: () => void;
   onGoHome: () => void;
+  redirectNotice?: string;
 }
 
-export const LoginPage: React.FC<LoginPageProps> = ({ onSuccess, onGoHome }) => {
+export const LoginPage: React.FC<LoginPageProps> = ({ onSuccess, onGoHome, redirectNotice }) => {
   const { signInWithGoogle, signInAsDemoUser, language, setLanguage } = useAuth();
   const t = translations[language];
 
@@ -189,6 +190,16 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSuccess, onGoHome }) => 
                 </button>
               </div>
             </div>
+
+            {redirectNotice && (
+              <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-[#174D35] leading-relaxed flex items-start gap-2.5 shadow-xs">
+                <Lock className="w-4 h-4 text-[#174D35] shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-bold block text-sm">Authentication Required</span>
+                  <span className="text-gray-700">{redirectNotice}</span>
+                </div>
+              </div>
+            )}
 
             {error && (
               <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-xs text-red-800 leading-relaxed flex items-start gap-2.5">

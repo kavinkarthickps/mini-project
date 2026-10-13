@@ -29,9 +29,17 @@ interface LandingPageProps {
   onStartScan: () => void;
   onStartLiveCamera?: () => void;
   onExploreLibrary: () => void;
+  onOpenDashboard?: () => void;
+  onOpenLogin?: () => void;
 }
 
-export const LandingPage: React.FC<LandingPageProps> = ({ onStartScan, onStartLiveCamera, onExploreLibrary }) => {
+export const LandingPage: React.FC<LandingPageProps> = ({ 
+  onStartScan, 
+  onStartLiveCamera, 
+  onExploreLibrary,
+  onOpenDashboard,
+  onOpenLogin
+}) => {
   const { language } = useAuth();
   const t = translations[language];
 
@@ -116,6 +124,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartScan, onStartLi
                     <Camera className="w-5 h-5 text-[#174D35]" />
                     <span>Live Camera Scan</span>
                     <span className="text-[10px] uppercase font-bold px-1.5 py-0.2 rounded bg-emerald-500 text-black">Live</span>
+                  </button>
+                )}
+                {onOpenDashboard && (
+                  <button
+                    onClick={onOpenDashboard}
+                    className="px-5 py-3.5 rounded-xl font-semibold text-white bg-[#205E40] hover:bg-[#184932] border border-[#34865e] shadow-xs transition-all flex items-center justify-center gap-2 text-base cursor-pointer"
+                  >
+                    <Activity className="w-5 h-5 text-emerald-300" />
+                    <span>Enter Dashboard</span>
                   </button>
                 )}
                 <a

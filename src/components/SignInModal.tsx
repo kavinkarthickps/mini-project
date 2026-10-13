@@ -6,9 +6,10 @@ import { X, ShieldCheck, Lock, Sprout, CheckCircle2, ArrowRight } from 'lucide-r
 interface SignInModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
-export const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
+export const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose, onSuccess }) => {
   const { signInWithGoogle, signInAsDemoUser, language } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -21,6 +22,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => 
     setError(null);
     try {
       await signInWithGoogle();
+      onSuccess?.();
       onClose();
     } catch (err: any) {
       setError(err?.message || 'Authentication failed. Please try again.');
@@ -31,6 +33,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => 
 
   const handleDemoSignIn = () => {
     signInAsDemoUser('Kavin Karthick', 'kavinkarthickps@gmail.com');
+    onSuccess?.();
     onClose();
   };
 
@@ -124,6 +127,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => 
                 const nameEl = document.getElementById('custom-name-input') as HTMLInputElement;
                 const emailEl = document.getElementById('custom-email-input') as HTMLInputElement;
                 signInAsDemoUser(nameEl?.value || 'Kavin Karthick', emailEl?.value || 'kavinkarthickps@gmail.com');
+                onSuccess?.();
                 onClose();
               }}
               className="w-full py-2.5 px-4 flex items-center justify-center gap-2 bg-[#174D35] hover:bg-[#1f5e42] text-white rounded-xl font-bold text-xs transition-colors cursor-pointer"

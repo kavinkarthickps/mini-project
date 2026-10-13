@@ -68,6 +68,49 @@ function MainApp() {
     };
   }, [user]);
 
+  // Check if current tab is a protected feature requiring authentication
+  const isProtectedTab = (tab: string) => {
+    return ['dashboard', 'camera', 'detect', 'intelligence', 'fields', 'library', 'history', 'planner', 'settings'].includes(tab);
+  };
+
+  const getFeatureNotice = (tab: string): string => {
+    switch (tab) {
+      case 'dashboard':
+        return "Please sign in to enter your Agronomist Dashboard and view live farm diagnostics.";
+      case 'detect':
+        return "Please sign in to run AI Pest Diagnostics & Crop Health Scans. After logging in, you will enter directly into the dashboard.";
+      case 'camera':
+        return "Please sign in to use Live Camera Real-Time Crop Inspection. Authentication is required to record field observations.";
+      case 'intelligence':
+      case 'fields':
+        return "Please sign in to access Field Intelligence and precision GPS plot mapping.";
+      case 'library':
+        return "Please sign in to explore the Comprehensive Crop Pest & Disease Diagnostic Encyclopedia.";
+      case 'history':
+        return "Please sign in to view your Farm Diagnostic Scan Reports and Historical Logs.";
+      case 'planner':
+        return "Please sign in to access the 5-Pillar Agronomy Treatment & IPM Protocol Planner.";
+      case 'settings':
+        return "Please sign in to access Farm Profile and agronomist configuration settings.";
+      default:
+        return "Please sign in to access this feature. After login, you will enter directly into the dashboard.";
+    }
+  };
+
+  // Track user auth transition: enter into dashboard after login
+  const prevUserRef = React.useRef<any>(user);
+
+  useEffect(() => {
+    // When user logs in, automatically enter into dashboard
+    if (!prevUserRef.current && user) {
+      setCurrentTab('dashboard');
+    } else if (prevUserRef.current && !user && currentTab !== 'home' && currentTab !== 'login') {
+      // When user logs out while on any protected feature, navigate back to home
+      setCurrentTab('home');
+    }
+    prevUserRef.current = user;
+  }, [user, currentTab]);
+
   // Handle when a new scan is saved from ScanWorkflow
   const handleScanSaved = (newScan: ScanReport) => {
     setScans(prev => [newScan, ...prev.filter(s => s.id !== newScan.id)]);
@@ -104,6 +147,8 @@ function MainApp() {
             onStartScan={() => setCurrentTab('detect')}
             onStartLiveCamera={() => setCurrentTab('camera')}
             onExploreLibrary={() => setCurrentTab('library')}
+            onOpenDashboard={() => setCurrentTab('dashboard')}
+            onOpenLogin={() => setCurrentTab('login')}
           />
         )}
 
@@ -114,7 +159,17 @@ function MainApp() {
           />
         )}
 
-        {currentTab === 'dashboard' && (
+        {/* Protected Feature Gate: If not logged in, any feature tab displays the login gate */}
+        {!user && isProtectedTab(currentTab) && (
+          <LoginPage
+            onSuccess={() => setCurrentTab('dashboard')}
+            onGoHome={() => setCurrentTab('home')}
+            redirectNotice={getFeatureNotice(currentTab)}
+          />
+        )}
+
+        {/* Authenticated Feature Views */}
+        {user && currentTab === 'dashboard' && (
           <Dashboard
             fields={fields}
             scans={scans}
@@ -132,7 +187,7 @@ function MainApp() {
           />
         )}
 
-        {currentTab === 'camera' && (
+        {user && currentTab === 'camera' && (
           <LiveCameraInspection
             fields={fields}
             onBack={() => setCurrentTab('dashboard')}
@@ -140,7 +195,7 @@ function MainApp() {
           />
         )}
 
-        {currentTab === 'detect' && (
+        {user && currentTab === 'detect' && (
           <ScanWorkflow
             fields={fields}
             onScanSaved={handleScanSaved}
@@ -148,7 +203,7 @@ function MainApp() {
           />
         )}
 
-        {(currentTab === 'intelligence' || currentTab === 'fields') && (
+        {user && (currentTab === 'intelligence' || currentTab === 'fields') && (
           <FieldIntelligence
             fields={fields}
             scans={scans}
@@ -159,11 +214,11 @@ function MainApp() {
           />
         )}
 
-        {currentTab === 'library' && (
+        {user && currentTab === 'library' && (
           <PestLibrary />
         )}
 
-        {currentTab === 'history' && (
+        {user && currentTab === 'history' && (
           <ScanHistory
             scans={scans}
             onViewReport={(scan) => setViewingScanModal(scan)}
@@ -171,11 +226,11 @@ function MainApp() {
           />
         )}
 
-        {currentTab === 'planner' && (
+        {user && currentTab === 'planner' && (
           <TreatmentPlanner />
         )}
 
-        {currentTab === 'settings' && (
+        {user && currentTab === 'settings' && (
           <Settings
             onRefreshScans={loadData}
             onRefreshFields={loadData}
@@ -187,10 +242,11 @@ function MainApp() {
       <SignInModal
         isOpen={isSignInModalOpen}
         onClose={() => setIsSignInModalOpen(false)}
+        onSuccess={() => setCurrentTab('dashboard')}
       />
 
-      {/* Small LLM Agronomist Copilot Assistant */}
-      <AgronomistCopilot />
+      {/* Small LLM Agronomist Copilot Assistant - Only available after login */}
+      {user && <AgronomistCopilot />}
 
       {/* Scan Detail Report Modal (When clicked from Dashboard or History) */}
       {viewingScanModal && (

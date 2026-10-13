@@ -23,7 +23,8 @@ import {
   ChevronDown,
   Layers,
   Settings as SettingsIcon,
-  Sparkles
+  Sparkles,
+  Lock
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -114,15 +115,31 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab, openS
                 </button>
 
                 <button
+                  onClick={() => handleNavClick('dashboard')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
+                    currentTab === 'dashboard' 
+                      ? 'bg-[#226343] text-white shadow-xs font-bold' 
+                      : 'text-[#D3E4D6] hover:bg-[#1c553a] hover:text-white'
+                  }`}
+                  title="Agronomist Dashboard (Sign in to enter)"
+                >
+                  <Activity className="w-3.5 h-3.5 text-[#63A66A]" />
+                  <span>{t.navDashboard}</span>
+                  <Lock className="w-3 h-3 text-[#A3C9A8]/70" />
+                </button>
+
+                <button
                   onClick={() => handleNavClick('detect')}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
                     currentTab === 'detect' 
                       ? 'bg-[#226343] text-white shadow-xs font-bold' 
                       : 'text-[#D3E4D6] hover:bg-[#1c553a] hover:text-white'
                   }`}
+                  title="Pest & Disease Diagnostic Scan (Sign in to enter)"
                 >
                   <Scan className="w-3.5 h-3.5 text-[#63A66A]" />
                   <span>{t.navDetect}</span>
+                  <Lock className="w-3 h-3 text-[#A3C9A8]/70" />
                 </button>
 
                 <button
@@ -132,32 +149,37 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab, openS
                       ? 'bg-[#103726] text-white border border-[#63A66A] shadow-xs'
                       : 'text-[#A3C9A8] hover:text-white hover:bg-[#1c553a]'
                   }`}
+                  title="Live Camera Inspection (Sign in to enter)"
                 >
                   <Camera className="w-3.5 h-3.5 text-emerald-400" />
                   <span>{t.navLiveInspect}</span>
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <Lock className="w-3 h-3 text-emerald-400/80" />
                 </button>
 
                 <button
                   onClick={() => handleNavClick('intelligence')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
                     currentTab === 'intelligence' 
                       ? 'bg-[#226343] text-white shadow-xs font-bold' 
                       : 'text-[#D3E4D6] hover:bg-[#1c553a] hover:text-white'
                   }`}
+                  title="Field Intelligence & GPS Mapping (Sign in to enter)"
                 >
-                  {t.navIntelligence}
+                  <span>{t.navIntelligence}</span>
+                  <Lock className="w-3 h-3 text-[#A3C9A8]/70" />
                 </button>
 
                 <button
                   onClick={() => handleNavClick('library')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
                     currentTab === 'library' 
                       ? 'bg-[#226343] text-white shadow-xs font-bold' 
                       : 'text-[#D3E4D6] hover:bg-[#1c553a] hover:text-white'
                   }`}
+                  title="Pest & Disease Library (Sign in to enter)"
                 >
-                  {t.navLibrary}
+                  <span>{t.navLibrary}</span>
+                  <Lock className="w-3 h-3 text-[#A3C9A8]/70" />
                 </button>
               </>
             ) : (
@@ -434,6 +456,16 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab, openS
                 {t.navHome}
               </button>
               <button
+                onClick={() => handleNavClick('dashboard')}
+                className="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold text-white hover:bg-[#1a4a34] flex items-center justify-between"
+              >
+                <div className="flex items-center gap-2">
+                  <Activity className="w-4 h-4 text-[#63A66A]" />
+                  <span>{t.navDashboard}</span>
+                </div>
+                <span className="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded bg-[#205E40] text-[#A3C9A8]">Requires Login</span>
+              </button>
+              <button
                 onClick={() => handleNavClick('camera')}
                 className="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold bg-[#1a4a34] text-emerald-400 flex items-center justify-between"
               >
@@ -441,28 +473,45 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab, openS
                   <Camera className="w-4 h-4" />
                   <span>{t.navLiveInspect}</span>
                 </div>
-                <span className="text-[9px] uppercase font-bold px-1.5 py-0.2 rounded bg-emerald-500 text-black">Live</span>
+                <span className="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded bg-[#205E40] text-[#A3C9A8] flex items-center gap-1">
+                  <Lock className="w-2.5 h-2.5" /> Requires Login
+                </span>
               </button>
               <button
                 onClick={() => handleNavClick('detect')}
-                className="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold text-white hover:bg-[#1a4a34] flex items-center gap-2"
+                className="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold text-white hover:bg-[#1a4a34] flex items-center justify-between"
               >
-                <Scan className="w-4 h-4 text-[#63A66A]" />
-                {t.navDetect}
+                <div className="flex items-center gap-2">
+                  <Scan className="w-4 h-4 text-[#63A66A]" />
+                  <span>{t.navDetect}</span>
+                </div>
+                <span className="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded bg-[#205E40] text-[#A3C9A8] flex items-center gap-1">
+                  <Lock className="w-2.5 h-2.5" /> Requires Login
+                </span>
               </button>
               <button
                 onClick={() => handleNavClick('intelligence')}
-                className="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold text-white hover:bg-[#1a4a34] flex items-center gap-2"
+                className="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold text-white hover:bg-[#1a4a34] flex items-center justify-between"
               >
-                <Activity className="w-4 h-4 text-[#63A66A]" />
-                {t.navIntelligence}
+                <div className="flex items-center gap-2">
+                  <Activity className="w-4 h-4 text-[#63A66A]" />
+                  <span>{t.navIntelligence}</span>
+                </div>
+                <span className="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded bg-[#205E40] text-[#A3C9A8] flex items-center gap-1">
+                  <Lock className="w-2.5 h-2.5" /> Requires Login
+                </span>
               </button>
               <button
                 onClick={() => handleNavClick('library')}
-                className="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold text-white hover:bg-[#1a4a34] flex items-center gap-2"
+                className="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold text-white hover:bg-[#1a4a34] flex items-center justify-between"
               >
-                <BookOpen className="w-4 h-4 text-[#63A66A]" />
-                {t.navLibrary}
+                <div className="flex items-center gap-2">
+                  <BookOpen className="w-4 h-4 text-[#63A66A]" />
+                  <span>{t.navLibrary}</span>
+                </div>
+                <span className="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded bg-[#205E40] text-[#A3C9A8] flex items-center gap-1">
+                  <Lock className="w-2.5 h-2.5" /> Requires Login
+                </span>
               </button>
               <div className="pt-2 border-t border-[#216143] space-y-2">
                 <button
